@@ -445,7 +445,7 @@ public class Matriks {
 
 		int b = 0;
 		// Cek perkolom
-		for ( int j = M.GetFirstIdxKol(); j-b < M.GetLastIdxBrs() + 1; j++ ) {
+		for ( int j = M.GetFirstIdxKol(); j-b < M.GetLastIdxBrs()-1; j++ ) {
 
 			if ( M.Indeks[j-b][j] == 0 ) {
 
@@ -501,38 +501,38 @@ public class Matriks {
 		Matriks M = new Matriks(this.NBrsEff,this.NKolEff);
 		M.CopyMatriks(this.GaussElimination());
 
-		// for ( int i = M.GetLastIdxBrs(); i > M.GetFirstIdxBrs(); i-- ) {
-		// 	for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol() + 1; j++ ) {
-		// 		if ( M.Indeks[i][j] != 0 ) {
-		// 			for ( int k = i-1; k > M.GetFirstIdxBrs()-1; k-- ) {
-		// 				if ( M.Indeks[k][j] != 0 ) {
-		// 					double dvdr = M.Indeks[k][j]/M.Indeks[i][j];
-		// 					double[] RowDistract = new double[M.GetLastIdxKol()+1];
-		// 					for ( int l = M.GetFirstIdxKol(); l < M.GetLastIdxKol()+1; l++ ) {
-		// 						RowDistract[l] = M.Indeks[i][l] * dvdr;
-		// 					}
-		// 					M.Indeks[k] = M.KurangRow(M.Indeks[k], RowDistract);
-		// 				}
-		// 			}
-		// 			break;
-		// 		}
-		// 	}
-		// }
+		for ( int i = M.GetLastIdxBrs(); i > M.GetFirstIdxBrs(); i-- ) {
+			for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol() + 1; j++ ) {
+				if ( M.Indeks[i][j] != 0 ) {
+					for ( int k = i-1; k > M.GetFirstIdxBrs()-1; k-- ) {
+						if ( M.Indeks[k][j] != 0 ) {
+							double dvdr = M.Indeks[k][j]/M.Indeks[i][j];
+							double[] RowDistract = new double[M.GetLastIdxKol()+1];
+							for ( int l = M.GetFirstIdxKol(); l < M.GetLastIdxKol()+1; l++ ) {
+								RowDistract[l] = M.Indeks[i][l] * dvdr;
+							}
+							M.Indeks[k] = M.KurangRow(M.Indeks[k], RowDistract);
+						}
+					}
+					break;
+				}
+			}
+		}
 
-		// double dvdr;
-		// for ( int i = M.GetFirstIdxBrs(); i < M.GetLastIdxBrs() + 1; i++ ) {
-		// 	for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol() + 1; j++ ) {
-		// 		if ( M.Indeks[i][j] != 0 ) {
-		// 			dvdr = M.Indeks[i][j];
+		double dvdr;
+		for ( int i = M.GetFirstIdxBrs(); i < M.GetLastIdxBrs() + 1; i++ ) {
+			for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol() + 1; j++ ) {
+				if ( M.Indeks[i][j] != 0 ) {
+					dvdr = M.Indeks[i][j];
 
-		// 			for ( int k = j; k < M.GetLastIdxKol() + 1; k++ ) {
-		// 				M.Indeks[i][k] /= dvdr;
-		// 			}
+					for ( int k = j; k < M.GetLastIdxKol() + 1; k++ ) {
+						M.Indeks[i][k] /= dvdr;
+					}
 
-		// 			break;
-		// 		}
-		// 	}
-		// }
+					break;
+				}
+			}
+		}
 
 		return M;
 	}
@@ -612,6 +612,13 @@ public class Matriks {
 		}
 		char[] ch = {'s','t','u','v','w','x','y','z'};
 
+		if ( SP.GetNPL() > SP.GetNmax() ) {
+			for ( int i = SP.GetNmax(); i < SP.GetNPL()+1; i++ ) {
+				M.Indeks[SP.GetNmax()] = M.TambahRow(M.Indeks[SP.GetNmax()], M.Indeks[i]); 
+				M.NBrsEff -= 1;
+			}
+		}
+
 		int a = 1;
 		int c = 0;
 		for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {
@@ -623,33 +630,34 @@ public class Matriks {
 			}
 		}
 
-		if ( M.DeterminanGauss() != 0 ) {
-			for ( int i = M.GetFirstIdxBrs(); i < M.GetLastIdxBrs()+1; i++ ) {
-				if (!M.IsRowZero(i)) {
-					for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {
-						if ( M.Indeks[i][j] == 1 ) {
-							if ( M.Indeks[i][M.GetLastIdxKol()] != 0 ) {
-								System.out.printf("x%d = %.2f",j,M.Indeks[i][M.GetLastIdxKol()]);
-							}
-							for ( int k = j+1; k < M.GetLastIdxKol(); k++ ) {
-								if ( M.Indeks[i][k] != 0 ) {
-									if ( M.Indeks[i][k] > 0 ) {
-										System.out.printf("%.2f%c",M.Indeks[i][k],FreeVar[k]);
-										c++;
+		for ( int i = M.GetFirstIdxBrs(); i < M.GetLastIdxBrs()+1; i++ ) {
+			if (!M.IsRowZero(i)) {
+				for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {
+					if ( M.Indeks[i][j] == 1 ) {
+						System.out.printf("x%d ",j);
+						if ( M.Indeks[i][M.GetLastIdxKol()] != 0 ) {
+							System.out.printf("= %.2f",M.Indeks[i][M.GetLastIdxKol()]);
+						}
+						for ( int k = j+1; k < M.GetLastIdxKol(); k++ ) {
+							if ( M.Indeks[i][k] != 0 ) {
+								if ( M.Indeks[i][k] > 0 ) {
+									if ( M.Indeks[i][M.GetLastIdxKol()] != 0 ) {
+										System.out.printf("+%.2f%c",M.Indeks[i][k],FreeVar[k]);
 									} else {
-										System.out.printf("-%.2f%c",M.Indeks[i][k],FreeVar[k]);
-										c++;
+										System.out.printf("%.2f%c",M.Indeks[i][k],FreeVar[k]);
 									}
+									c++;
+								} else {
+									System.out.printf("%.2f%c",M.Indeks[i][k],FreeVar[k]);
+									c++;
 								}
 							}
-							System.out.println();
-							break;
 						}
+						System.out.println();
+						break;
 					}
 				}
 			}
-		} else {
-			System.out.println("Persamaan tidak memiliki solusi");
 		}
 
 	}
