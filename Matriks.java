@@ -499,7 +499,7 @@ public class Matriks {
 
 	public Matriks GaussJordanElimination() {
 		Matriks M = new Matriks(this.NBrsEff,this.NKolEff);
-		M.CopyMatriks(this.GaussElimination());
+		M.CopyMatriks(this.GaussElimination()); 
 
 		for ( int i = M.GetLastIdxBrs(); i > M.GetFirstIdxBrs(); i-- ) {
 			for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol() + 1; j++ ) {
@@ -570,7 +570,7 @@ public class Matriks {
 
 		} else {
 
-			System.out.println("Persamaan tidak memiliki solusi");
+			System.out.println("Sistem tidak memiliki solusi");
 
 		}
 	}
@@ -619,45 +619,49 @@ public class Matriks {
 			}
 		}
 
-		int a = 1;
-		int c = 0;
-		for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {
-			if ( M.Indeks[a][j] != 1 ) {
-				FreeVar[j] = ch[c];
-				c++;
-			} else {
-				a++;
+		if ( M.NBrsEff != M.NKolEff || (M.NBrsEff == M.NKolEff && M.DeterminanGauss() != 0) ) {
+			int a = 1;
+			int c = 0;
+			for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {
+				if ( M.Indeks[a][j] != 1 ) {
+					FreeVar[j] = ch[c];
+					c++;
+				} else {
+					a++;
+				}
 			}
-		}
 
-		for ( int i = M.GetFirstIdxBrs(); i < M.GetLastIdxBrs()+1; i++ ) {
-			if (!M.IsRowZero(i)) {
-				for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {
-					if ( M.Indeks[i][j] == 1 ) {
-						System.out.printf("x%d ",j);
-						if ( M.Indeks[i][M.GetLastIdxKol()] != 0 ) {
-							System.out.printf("= %.2f",M.Indeks[i][M.GetLastIdxKol()]);
-						}
-						for ( int k = j+1; k < M.GetLastIdxKol(); k++ ) {
-							if ( M.Indeks[i][k] != 0 ) {
-								if ( M.Indeks[i][k] > 0 ) {
-									if ( M.Indeks[i][M.GetLastIdxKol()] != 0 ) {
-										System.out.printf("+%.2f%c",M.Indeks[i][k],FreeVar[k]);
+			for ( int i = M.GetFirstIdxBrs(); i < M.GetLastIdxBrs()+1; i++ ) {
+				if (!M.IsRowZero(i)) {
+					for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {
+						if ( M.Indeks[i][j] == 1 ) {
+							System.out.printf("x%d = ",j);
+							if ( M.Indeks[i][M.GetLastIdxKol()] != 0 ) {
+								System.out.printf("%.2f",M.Indeks[i][M.GetLastIdxKol()]);
+							}
+							for ( int k = j+1; k < M.GetLastIdxKol(); k++ ) {
+								if ( M.Indeks[i][k] != 0 ) {
+									if ( M.Indeks[i][k] < 0 ) {
+										if ( M.Indeks[i][M.GetLastIdxKol()] != 0 ) {
+											System.out.printf("+%.2f%c",M.Indeks[i][k],FreeVar[k]);
+										} else {
+											System.out.printf("%.2f%c",M.Indeks[i][k],FreeVar[k]);
+										}
+										c++;
 									} else {
 										System.out.printf("%.2f%c",M.Indeks[i][k],FreeVar[k]);
+										c++;
 									}
-									c++;
-								} else {
-									System.out.printf("%.2f%c",M.Indeks[i][k],FreeVar[k]);
-									c++;
 								}
 							}
+							System.out.println();
+							break;
 						}
-						System.out.println();
-						break;
 					}
 				}
 			}
+		} else {
+			System.out.println("Sistem tidak memiliki solusi");
 		}
 
 	}
@@ -665,11 +669,17 @@ public class Matriks {
     // ***** Penyelesaian SPL dengan inverse ******
 	public void SPLInverse(SPL SP) {
 		
-		Matriks MatriksX = new Matriks(SP.GetNPL(),1);
-		MatriksX = KaliMatriks(this.MatriksA().InverseAdjoin(), this.MatriksB());
-		for ( int i = MatriksX.GetFirstIdxBrs(); i < MatriksX.GetLastIdxBrs() + 1; i++ ) {
-			System.out.printf("x%d : %.2f\n",i,MatriksX.Indeks[i][1]);
+		if ( this.MatriksA().NBrsEff == this.MatriksA().NKolEff && this.MatriksA().DeterminanGauss() != 0 ) {
+			Matriks MatriksX = new Matriks(SP.GetNPL(),1);
+			MatriksX = KaliMatriks(this.MatriksA().InverseAdjoin(), this.MatriksB());
+			for ( int i = MatriksX.GetFirstIdxBrs(); i < MatriksX.GetLastIdxBrs() + 1; i++ ) {
+				System.out.printf("x%d : %.2f\n",i,MatriksX.Indeks[i][1]);
+			}
+		} else {
+			System.out.println("Sistem tidak memiliki solusi");
 		}
+
+		
 	}
 	// Menyelesaikan Sistem Persamaaan Linier dengan menggunakan metode inverse
 	// dan menampilkan hasilnya dalam format x<n> : <hasil>
@@ -689,9 +699,15 @@ public class Matriks {
 	public void SPLCramer(SPL SP) {
 		Matriks M = new Matriks(SP.GetNPL(),SP.GetNmax()+1);
 		M.SPLtoMatriks(SP);
-		for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {
-			System.out.printf("x%d : %.2f\n",j,Cramer(j, M.MatriksA(), M.MatriksB()));
+
+		if ( M.NBrsEff == M.NKolEff && M.DeterminanGauss() != 0 ) {
+			for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {
+				System.out.printf("x%d : %.2f\n",j,Cramer(j, M.MatriksA(), M.MatriksB()));
+			}
+		} else {
+			System.out.println("Sistem tidak memiliki solusi");
 		}
+		
 	}
 	// Menyelesaikan Sistem Persamaaan Linier dengan menggunakan kaidah cramer
 	// dan menampilkan hasilnya dalam format x<n> : <hasil>

@@ -1,6 +1,9 @@
 package algeo;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class SPL {
 
@@ -72,4 +75,44 @@ public class SPL {
         this.Nmax = n;
     }
     // Membaca m persamaan dengan n variabel
+
+    public void BacaFILESPL(String file) {
+
+        BufferedReader reader; 
+
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String line = reader.readLine();
+            int i = 0;
+            while (line != null) {
+                i++;
+                this.NPL += 1;
+                this.PLs[i].BacaFILEPL(line);
+                if ( this.PLs[i].Na > this.Nmax ) {
+                    this.Nmax = this.PLs[i].Na;
+                }
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void BacaPersamaanInterpolasi(int n) {
+
+        Scanner Input = new Scanner(System.in);
+
+        Matriks M = new Matriks(n+1,n+2);
+        this.NPL = n+1;
+        this.Nmax = n+1;
+
+        for ( int i = 1; i < this.GetNPL()+1; i++ ) {
+            double x = Input.nextDouble();
+            double y = Input.nextDouble();
+            for ( int j = 1; j < this.GetNmax()+1; j++ ) {
+                this.PLs[i].a[j] = Math.pow(x,j-1);
+            }
+            this.PLs[i].b = y;
+        }
+    }
 }

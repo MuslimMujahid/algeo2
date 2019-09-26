@@ -9,24 +9,48 @@ public class run {
     public static void print(String str) {
         System.out.print(str);
     }
+    public static void newline() {
+        System.out.println();
+    }
 
     public static void Run_SPLEliminasiGauss() {
+        
         Scanner Input = new Scanner(System.in);
-        
-        String[] arr = Input.nextLine().split(" ");
-        int m = Integer.parseInt(arr[0]);
-        int n = Integer.parseInt(arr[1]);
-        // Membaca n : banyaknya variabel persamaan
-
         SPL SP = new SPL();
-        Matriks MSP = new Matriks(m,n+1);
+        Matriks MSP;
         
-        SP.BacaSPL(m, n);
-        // Membaca m persamaan dengan n variabel
+        System.out.printf("Ingin membaca dari file ? (y/n)"); String c = Input.nextLine();
+
+        if ( "y".equals(c) ) {
+
+            System.out.print("Nama file : "); String filename = Input.nextLine();
+            SP.BacaFILESPL(filename);
+            // Baca File
+
+            MSP = new Matriks(SP.GetNPL(),SP.GetNmax()+1);
+            // Make Matriks
+        } else {
+
+            newline();
+            System.out.print("Banyak persamaan dan variabel : ");
+            String[] arr = Input.nextLine().split(" ");
+            int m = Integer.parseInt(arr[0]);
+            int n = Integer.parseInt(arr[1]);
+            // Membaca n : banyaknya variabel persamaan
+
+            MSP = new Matriks(m,n+1);
+            // Make Matriks
+            
+            newline();
+            System.out.println("Matriks : ");
+            SP.BacaSPL(m, n);
+            // Membaca m persamaan dengan n variabel
+        }
 
         MSP.SPLtoMatriks(SP);
         // Mengubah dari bentuk persamaan linier ke matriks
 
+        newline();
         MSP.SPLGauss(SP);
         // Menghitung dan menampilkan hasil dengan menggunakan-
         // kaidah Cramer
@@ -35,23 +59,44 @@ public class run {
     }
 
     public static void Run_SPLEliminasiGaussJordan() {
+        
         Scanner Input = new Scanner(System.in);
-        
-        String[] arr = Input.nextLine().split(" ");
-        int m = Integer.parseInt(arr[0]);
-        int n = Integer.parseInt(arr[1]);
-        // Membaca n : banyaknya variabel persamaan
-
         SPL SP = new SPL();
-        Matriks MSP = new Matriks(m,n+1);
+        Matriks MSP;
         
-        SP.BacaSPL(m, n);
-        // Membaca m persamaan dengan n variabel
+        System.out.printf("Ingin membaca dari file ? (y/n)"); String c = Input.nextLine();
+
+        if ( "y".equals(c) ) {
+
+            System.out.print("Nama file : "); String filename = Input.nextLine();
+            SP.BacaFILESPL(filename);
+            // Baca File
+
+            MSP = new Matriks(SP.GetNPL(),SP.GetNmax()+1);
+            // Make Matriks
+        } else {
+
+            newline();
+            System.out.print("Banyak persamaan dan variabel : ");
+            String[] arr = Input.nextLine().split(" ");
+            int m = Integer.parseInt(arr[0]);
+            int n = Integer.parseInt(arr[1]);
+            // Membaca n : banyaknya variabel persamaan
+
+            MSP = new Matriks(m,n+1);
+            // Make Matriks
+            
+            newline();
+            System.out.println("Matriks : ");
+            SP.BacaSPL(m, n);
+            // Membaca m persamaan dengan n variabel
+        }
 
         MSP.SPLtoMatriks(SP);
         // Mengubah dari bentuk persamaan linier ke matriks
 
-        MSP.SPLGaussJordan(SP);
+        newline();
+        MSP.SPLGauss(SP);
         // Menghitung dan menampilkan hasil dengan menggunakan-
         // kaidah Cramer
 
@@ -61,44 +106,87 @@ public class run {
     public static void Run_SPLMatriksBalikan() {
 
         Scanner Input = new Scanner(System.in);
-        
-        String[] arr = Input.nextLine().split(" ");
-        int m = Integer.parseInt(arr[0]);
-        int n = Integer.parseInt(arr[1]);
-        // Membaca n : banyaknya variabel persamaan
-
         SPL SP = new SPL();
-        Matriks MSP = new Matriks(m,n+1);
+        Matriks MSP;
         
-        SP.BacaSPL(m, n);
-        // Membaca m persamaan dengan n variabel
+        System.out.printf("Ingin membaca dari file ? (y/n)"); String c = Input.nextLine();
+
+        if ( "y".equals(c) ) {
+
+            System.out.print("Nama file : "); String filename = Input.nextLine();
+            SP.BacaFILESPL(filename);
+            // Baca File
+
+            MSP = new Matriks(SP.GetNPL(),SP.GetNmax()+1);
+            // Make Matriks
+        } else {
+
+            newline();
+            System.out.print("Banyak persamaan dan variabel : ");
+            String[] arr = Input.nextLine().split(" ");
+            int m = Integer.parseInt(arr[0]);
+            int n = Integer.parseInt(arr[1]);
+            // Membaca n : banyaknya variabel persamaan
+
+            MSP = new Matriks(m,n+1);
+            // Make Matriks
+            
+            newline();
+            System.out.println("Matriks : ");
+            SP.BacaSPL(m, n);
+            // Membaca m persamaan dengan n variabel
+        }
 
         MSP.SPLtoMatriks(SP);
         // Mengubah dari bentuk persamaan linier ke matriks
 
-        MSP.SPLInverse(SP);
+        newline();
+        MSP.SPLGauss(SP);
         // Menghitung dan menampilkan hasil dengan menggunakan-
-        // metode inverse
+        // kaidah Cramer
+
+        Input.close();
     }
 
     public static void Run_SPLCramer() {
+        
         Scanner Input = new Scanner(System.in);
-        
-        String[] arr = Input.nextLine().split(" ");
-        int m = Integer.parseInt(arr[0]);
-        int n = Integer.parseInt(arr[1]);
-        // Membaca n : banyaknya variabel persamaan
-
         SPL SP = new SPL();
-        Matriks MSP = new Matriks(m,n+1);
+        Matriks MSP;
         
-        SP.BacaSPL(m, n);
-        // Membaca m persamaan dengan n variabel
+        System.out.printf("Ingin membaca dari file ? (y/n)"); String c = Input.nextLine();
+
+        if ( "y".equals(c) ) {
+
+            System.out.print("Nama file : "); String filename = Input.nextLine();
+            SP.BacaFILESPL(filename);
+            // Baca File
+
+            MSP = new Matriks(SP.GetNPL(),SP.GetNmax()+1);
+            // Make Matriks
+        } else {
+
+            newline();
+            System.out.print("Banyak persamaan dan variabel : ");
+            String[] arr = Input.nextLine().split(" ");
+            int m = Integer.parseInt(arr[0]);
+            int n = Integer.parseInt(arr[1]);
+            // Membaca n : banyaknya variabel persamaan
+
+            MSP = new Matriks(m,n+1);
+            // Make Matriks
+            
+            newline();
+            System.out.println("Matriks : ");
+            SP.BacaSPL(m, n);
+            // Membaca m persamaan dengan n variabel
+        }
 
         MSP.SPLtoMatriks(SP);
         // Mengubah dari bentuk persamaan linier ke matriks
 
-        MSP.SPLCramer(SP);
+        newline();
+        MSP.SPLGauss(SP);
         // Menghitung dan menampilkan hasil dengan menggunakan-
         // kaidah Cramer
 
@@ -181,6 +269,20 @@ public class run {
         Input.close();
     }
 
+    public static void Run_InterPolasiPolinom() {
+        Scanner Input = new Scanner(System.in);
+
+        int N = Input.nextInt();
+
+        Matriks M = new Matriks(N+1,N+2);
+        SPL SP = new SPL();
+
+        SP.BacaPersamaanInterpolasi(N);
+        M.InterPolasiPolinom(SP);
+
+        Input.close();
+    }
+
     public static void ClearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -192,7 +294,8 @@ public class run {
 
             ClearScreen();
             Scanner Input = new Scanner(System.in);
-            int op,subop;
+            int op = 0;
+            int subop = 0;
             println("================ MENU ================");
             println("1. Sistem Persamaan Linier");
             println("2. Determinan");
@@ -264,7 +367,7 @@ public class run {
                 // Menu 5 adjoin
                 case 5: Run_Adjoin(); break;
                 // Menu 6 interpolasi polinom
-                case 6: break;
+                case 6: Run_InterPolasiPolinom(); break;
                 // keluar
                 case 7: System.exit(0);;
                 default: break;
