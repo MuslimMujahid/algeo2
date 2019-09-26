@@ -19,7 +19,7 @@ public class run {
         SPL SP = new SPL();
         Matriks MSP;
         
-        System.out.printf("Ingin membaca dari file ? (y/n)"); String c = Input.nextLine();
+        System.out.printf("Ingin membaca dari file ? (y/n) : \n"); String c = Input.nextLine();
 
         if ( "y".equals(c) ) {
 
@@ -64,7 +64,7 @@ public class run {
         SPL SP = new SPL();
         Matriks MSP;
         
-        System.out.printf("Ingin membaca dari file ? (y/n)"); String c = Input.nextLine();
+        System.out.printf("Ingin membaca dari file ? (y/n) : \n"); String c = Input.nextLine();
 
         if ( "y".equals(c) ) {
 
@@ -96,7 +96,7 @@ public class run {
         // Mengubah dari bentuk persamaan linier ke matriks
 
         newline();
-        MSP.SPLGauss(SP);
+        MSP.SPLGaussJordan(SP);
         // Menghitung dan menampilkan hasil dengan menggunakan-
         // kaidah Cramer
 
@@ -109,7 +109,7 @@ public class run {
         SPL SP = new SPL();
         Matriks MSP;
         
-        System.out.printf("Ingin membaca dari file ? (y/n)"); String c = Input.nextLine();
+        System.out.printf("Ingin membaca dari file ? (y/n) : \n"); String c = Input.nextLine();
 
         if ( "y".equals(c) ) {
 
@@ -141,7 +141,7 @@ public class run {
         // Mengubah dari bentuk persamaan linier ke matriks
 
         newline();
-        MSP.SPLGauss(SP);
+        MSP.SPLInverse(SP);
         // Menghitung dan menampilkan hasil dengan menggunakan-
         // kaidah Cramer
 
@@ -154,7 +154,7 @@ public class run {
         SPL SP = new SPL();
         Matriks MSP;
         
-        System.out.printf("Ingin membaca dari file ? (y/n)"); String c = Input.nextLine();
+        System.out.printf("Ingin membaca dari file ? (y/n) : \n"); String c = Input.nextLine();
 
         if ( "y".equals(c) ) {
 
@@ -186,7 +186,7 @@ public class run {
         // Mengubah dari bentuk persamaan linier ke matriks
 
         newline();
-        MSP.SPLGauss(SP);
+        MSP.SPLCramer(SP);
         // Menghitung dan menampilkan hasil dengan menggunakan-
         // kaidah Cramer
 
