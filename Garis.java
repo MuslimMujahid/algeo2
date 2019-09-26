@@ -2,6 +2,7 @@ package algeo;
 import java.util.Scanner;
 
 import java.lang.Math;
+import java.math.BigDecimal;
 
 public class Garis {
     // {** KONSTRUKTOR** }
@@ -40,11 +41,11 @@ public class Garis {
 		Matriks M = new Matriks(n+1,n+2);
 
 		for ( int i = M.GetFirstIdxBrs(); i < M.GetLastIdxBrs()+1; i++ ) {
-			double x = Input.nextDouble();
-			double y = Input.nextDouble();
+			BigDecimal x = new BigDecimal(Input.nextLine());
+			BigDecimal y = new BigDecimal(Input.nextLine());
 			for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {
 
-				M.Indeks[i][j] = Math.pow(x,j-1);
+				M.Indeks[i][j] = BigDecimal.valueOf(Math.pow(x.doubleValue(),j-1));
 			}
 			M.Indeks[i][M.GetLastIdxKol()] = y;
 		}
