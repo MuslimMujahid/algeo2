@@ -1,4 +1,7 @@
 package algeo;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 //ADT MATRIKS
 import java.util.Scanner;
 
@@ -63,6 +66,35 @@ public class Matriks {
 	// Membaca matriks perbaris dengan tiap elemen diantarai spasi
 	// F.S : Elemen matriks terdefinisi
 
+	public void BacaFILEMatriks(String file) {
+		BufferedReader reader; 
+
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String line = reader.readLine();
+			int i = 0;
+			String[] Arr;
+            while (line != null) {
+				i++;
+				this.NBrsEff += 1;
+                Arr = ("0 " + line).split(" ");
+				for (int j = 1; j <= Arr.length-1; j++) {
+					this.Indeks[i][j] = Double.parseDouble(Arr[j]);
+				}
+				line = reader.readLine();
+				this.NKolEff = Arr.length-1;
+			}
+			
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+
+	public static double roundAvoid(double value, int places) {
+		double scale = Math.pow(10, places);
+		return Math.round(value * scale) / scale;
+	}
+
 	public void TulisMatriks() {
 		int NB = this.GetLastIdxBrs();
 		int NK = this.GetLastIdxKol();
@@ -90,15 +122,13 @@ public class Matriks {
 	// F.S : Elemen matriks sama dengan elemen matriks M
 
 	public static Matriks TambahMatriks (Matriks M1, Matriks M2) {
-	/* Prekondisi : M1  berukuran sama dengan M2 */
-	/* Mengirim hasil penjumlahan matriks: M1 + M2 */
 		int NB = M1.GetLastIdxBrs();
 		int NK = M2.GetLastIdxKol();
 
 		Matriks M = new Matriks(M1.NBrsEff,M1.NKolEff);
 		for (int i = 1; i <= NB; i++) {
 			for (int j = 1; j <= NK; j++) {
-				M.Indeks[i][j] = M1.Indeks[i][j] + M1.Indeks[i][j];
+				M.Indeks[i][j] = roundAvoid(M1.Indeks[i][j] + M1.Indeks[i][j], 4);
 
 			}
 		}
@@ -114,7 +144,7 @@ public class Matriks {
 		Matriks M = new Matriks(NB,NK);
 		for (int i = 1; i <= NB; i++) {
 			for (int j = 1; j <= NK; j++) {
-				M.Indeks[i][j] = M1.Indeks[i][j] - M1.Indeks[i][j];
+				M.Indeks[i][j] = roundAvoid(M1.Indeks[i][j] - M1.Indeks[i][j], 4);
 			}
 		}
 		return M;
@@ -123,7 +153,7 @@ public class Matriks {
 	public double[] KurangRow (double[] R1, double[] R2) {
 
 		for ( int i = 1; i < this.GetLastIdxKol() + 1; i++ ) {
-			R1[i] -= R2[i];
+			R1[i] = roundAvoid(R1[i] - R2[i], 4);
 		}
 
 		return R1;
@@ -132,7 +162,7 @@ public class Matriks {
 	public double[] TambahRow (double[] R1, double[] R2) {
 
 		for ( int i = 1; i < this.GetLastIdxKol() + 1; i++ ) {
-			R1[i] += R2[i];
+			R1[i] = roundAvoid(R1[i] - R2[i], 4);
 		}
 
 		return R1;
@@ -140,12 +170,12 @@ public class Matriks {
 
 	public static Matriks KaliMatriks(Matriks M1, Matriks M2) {
 		Matriks M = new Matriks(M1.GetLastIdxBrs(), M1.GetLastIdxKol());
-		int X = 0; /*sebagai counter untuk menjumlahkan hasil perkalian tiap elemen*/
+		double X = 0; /*sebagai counter untuk menjumlahkan hasil perkalian tiap elemen*/
 		for (int i=M1.GetFirstIdxBrs();i<=M1.GetLastIdxBrs();i++) {
 			for (int j=M2.GetFirstIdxKol();j<=M2.GetLastIdxKol();j++) {
 				X=0;
 				for (int k=M1.GetFirstIdxKol();k<=M1.GetLastIdxKol();k++) {
-					X+=M1.Indeks[i][k]*M2.Indeks[k][j]; /*perkalian baris dengan kolom*/
+					X=roundAvoid(X+M1.Indeks[i][k]*M2.Indeks[k][j], 4); /*perkalian baris dengan kolom*/
 				}
 				M.Indeks[i][j] = X;
 			}
@@ -485,7 +515,7 @@ public class Matriks {
 					dvdr = M.Indeks[i][j];
 
 					for ( int k = j; k < M.GetLastIdxKol() + 1; k++ ) {
-						M.Indeks[i][k] /= dvdr;
+						M.Indeks[i][k] = roundAvoid(M.Indeks[i][k]/dvdr, 4);
 					}
 
 					break;
@@ -506,10 +536,10 @@ public class Matriks {
 				if ( M.Indeks[i][j] != 0 ) {
 					for ( int k = i-1; k > M.GetFirstIdxBrs()-1; k-- ) {
 						if ( M.Indeks[k][j] != 0 ) {
-							double dvdr = M.Indeks[k][j]/M.Indeks[i][j];
+							double dvdr = roundAvoid(M.Indeks[k][j]/M.Indeks[i][j], 4);
 							double[] RowDistract = new double[M.GetLastIdxKol()+1];
 							for ( int l = M.GetFirstIdxKol(); l < M.GetLastIdxKol()+1; l++ ) {
-								RowDistract[l] = M.Indeks[i][l] * dvdr;
+								RowDistract[l] = roundAvoid(M.Indeks[i][l] * dvdr, 4);
 							}
 							M.Indeks[k] = M.KurangRow(M.Indeks[k], RowDistract);
 						}
@@ -526,7 +556,7 @@ public class Matriks {
 					dvdr = M.Indeks[i][j];
 
 					for ( int k = j; k < M.GetLastIdxKol() + 1; k++ ) {
-						M.Indeks[i][k] /= dvdr;
+						M.Indeks[i][k] = roundAvoid(M.Indeks[i][k]/dvdr, 4);
 					}
 
 					break;
@@ -619,7 +649,7 @@ public class Matriks {
 			}
 		}
 
-		if ( M.NBrsEff != M.NKolEff || (M.NBrsEff == M.NKolEff && M.DeterminanGauss() != 0) ) {
+		if ( (M.NBrsEff != M.NKolEff) || (M.NBrsEff == M.NKolEff && M.DeterminanGauss() != 0) ) {
 			int a = 1;
 			int c = 0;
 			for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {

@@ -12,6 +12,10 @@ public class run {
     public static void newline() {
         System.out.println();
     }
+    public static void ClearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
 
     public static void Run_SPLEliminasiGauss() {
         
@@ -19,7 +23,7 @@ public class run {
         SPL SP = new SPL();
         Matriks MSP;
         
-        System.out.printf("Ingin membaca dari file ? (y/n) : \n"); String c = Input.nextLine();
+        System.out.printf("Ingin membaca dari file ? (y/n) : "); String c = Input.nextLine();
 
         if ( "y".equals(c) ) {
 
@@ -32,7 +36,7 @@ public class run {
         } else {
 
             newline();
-            System.out.print("Banyak persamaan dan variabel : ");
+            System.out.println("Banyak persamaan dan variabel : ");
             String[] arr = Input.nextLine().split(" ");
             int m = Integer.parseInt(arr[0]);
             int n = Integer.parseInt(arr[1]);
@@ -64,7 +68,7 @@ public class run {
         SPL SP = new SPL();
         Matriks MSP;
         
-        System.out.printf("Ingin membaca dari file ? (y/n) : \n"); String c = Input.nextLine();
+        System.out.printf("Ingin membaca dari file ? (y/n) : "); String c = Input.nextLine();
 
         if ( "y".equals(c) ) {
 
@@ -77,7 +81,7 @@ public class run {
         } else {
 
             newline();
-            System.out.print("Banyak persamaan dan variabel : ");
+            System.out.println("Banyak persamaan dan variabel : ");
             String[] arr = Input.nextLine().split(" ");
             int m = Integer.parseInt(arr[0]);
             int n = Integer.parseInt(arr[1]);
@@ -109,7 +113,7 @@ public class run {
         SPL SP = new SPL();
         Matriks MSP;
         
-        System.out.printf("Ingin membaca dari file ? (y/n) : \n"); String c = Input.nextLine();
+        System.out.printf("Ingin membaca dari file ? (y/n) : "); String c = Input.nextLine();
 
         if ( "y".equals(c) ) {
 
@@ -122,7 +126,7 @@ public class run {
         } else {
 
             newline();
-            System.out.print("Banyak persamaan dan variabel : ");
+            System.out.println("Banyak persamaan dan variabel : ");
             String[] arr = Input.nextLine().split(" ");
             int m = Integer.parseInt(arr[0]);
             int n = Integer.parseInt(arr[1]);
@@ -154,7 +158,7 @@ public class run {
         SPL SP = new SPL();
         Matriks MSP;
         
-        System.out.printf("Ingin membaca dari file ? (y/n) : \n"); String c = Input.nextLine();
+        System.out.printf("Ingin membaca dari file ? (y/n) : "); String c = Input.nextLine();
 
         if ( "y".equals(c) ) {
 
@@ -167,7 +171,7 @@ public class run {
         } else {
 
             newline();
-            System.out.print("Banyak persamaan dan variabel : ");
+            System.out.println("Banyak persamaan dan variabel : ");
             String[] arr = Input.nextLine().split(" ");
             int m = Integer.parseInt(arr[0]);
             int n = Integer.parseInt(arr[1]);
@@ -195,11 +199,26 @@ public class run {
 
     public static void Run_DeterminanKofaktor() {
         Scanner Input = new Scanner(System.in);
+        Matriks M;
+        
+        System.out.printf("Ingin membaca dari file ? (y/n) : "); String c = Input.nextLine();
 
-        int N = Input.nextInt();
+        if ( "y".equals(c) ) {
+            M = new Matriks(0,0);
+            System.out.print("Nama file : "); String filename = Input.nextLine();
+            M.BacaFILEMatriks(filename);
+            // Make Matriks
+        } else {
+            newline();
+            System.out.print("Dimensi matriks : ");
+            int N = Input.nextInt();
 
-        Matriks M = new Matriks(N,N);
-        M.BacaMatriks();
+            M = new Matriks(N,N);
+
+            newline();
+            System.out.println("Matriks : ");
+            M.BacaMatriks();
+        }
 
         System.out.printf("Determinan : %.2f\n",M.DeterminanKofaktor());
 
@@ -208,11 +227,26 @@ public class run {
 
     public static void Run_DeterminanGauss() {
         Scanner Input = new Scanner(System.in);
+        Matriks M;
+        
+        System.out.printf("Ingin membaca dari file ? (y/n) : "); String c = Input.nextLine();
 
-        int N = Input.nextInt();
+        if ( "y".equals(c) ) {
+            M = new Matriks(0,0);
+            System.out.print("Nama file : "); String filename = Input.nextLine();
+            M.BacaFILEMatriks(filename);
+            // Make Matriks
+        } else {
+            newline();
+            System.out.print("Dimensi matriks : ");
+            int N = Input.nextInt();
 
-        Matriks M = new Matriks(N,N);
-        M.BacaMatriks();
+            M = new Matriks(N,N);
+
+            newline();
+            System.out.println("Matriks : ");
+            M.BacaMatriks();
+        }
 
         System.out.printf("Determinan : %.2f\n",M.DeterminanGauss());
 
@@ -221,11 +255,26 @@ public class run {
 
     public static void Run_MatriksBalikanAdjoin() {
         Scanner Input = new Scanner(System.in);
+        Matriks M;
+        
+        System.out.printf("Ingin membaca dari file ? (y/n) : "); String c = Input.nextLine();
 
-        int N = Input.nextInt();
+        if ( "y".equals(c) ) {
+            M = new Matriks(0,0);
+            System.out.print("Nama file : "); String filename = Input.nextLine();
+            M.BacaFILEMatriks(filename);
+            // Make Matriks
+        } else {
+            newline();
+            System.out.print("Dimensi matriks : ");
+            int N = Input.nextInt();
 
-        Matriks M = new Matriks(N,N);
-        M.BacaMatriks();
+            M = new Matriks(N,N);
+
+            newline();
+            System.out.println("Matriks : ");
+            M.BacaMatriks();
+        }
 
         M.InverseAdjoin().TulisMatriks();
 
@@ -234,10 +283,26 @@ public class run {
 
     public static void Run_MatriksKofaktor() {
         Scanner Input = new Scanner(System.in);
-        int N = Input.nextInt();
+        Matriks M;
+        
+        System.out.printf("Ingin membaca dari file ? (y/n) : "); String c = Input.nextLine();
 
-        Matriks M = new Matriks(N,N);
-        M.BacaMatriks();
+        if ( "y".equals(c) ) {
+            M = new Matriks(0,0);
+            System.out.print("Nama file : "); String filename = Input.nextLine();
+            M.BacaFILEMatriks(filename);
+            // Make Matriks
+        } else {
+            newline();
+            System.out.print("Dimensi matriks : ");
+            int N = Input.nextInt();
+
+            M = new Matriks(N,N);
+
+            newline();
+            System.out.println("Matriks : ");
+            M.BacaMatriks();
+        }
 
         M.MatriksKofaktor().TulisMatriks();
 
@@ -246,10 +311,26 @@ public class run {
 
     public static void Run_Adjoin() {
         Scanner Input = new Scanner(System.in);
-        int N = Input.nextInt();
+        Matriks M;
+        
+        System.out.printf("Ingin membaca dari file ? (y/n) : "); String c = Input.nextLine();
 
-        Matriks M = new Matriks(N,N);
-        M.BacaMatriks();
+        if ( "y".equals(c) ) {
+            M = new Matriks(0,0);
+            System.out.print("Nama file : "); String filename = Input.nextLine();
+            M.BacaFILEMatriks(filename);
+            // Make Matriks
+        } else {
+            newline();
+            System.out.print("Dimensi matriks : ");
+            int N = Input.nextInt();
+
+            M = new Matriks(N,N);
+
+            newline();
+            System.out.println("Matriks : ");
+            M.BacaMatriks();
+        }
 
         M.Adjoin().TulisMatriks();
 
@@ -258,11 +339,26 @@ public class run {
 
     public static void Run_MatriksBalikanGauss() {
         Scanner Input = new Scanner(System.in);
+        Matriks M;
+        
+        System.out.printf("Ingin membaca dari file ? (y/n) : "); String c = Input.nextLine();
 
-        int N = Input.nextInt();
+        if ( "y".equals(c) ) {
+            M = new Matriks(0,0);
+            System.out.print("Nama file : "); String filename = Input.nextLine();
+            M.BacaFILEMatriks(filename);
+            // Make Matriks
+        } else {
+            newline();
+            System.out.print("Dimensi matriks : ");
+            int N = Input.nextInt();
 
-        Matriks M = new Matriks(N,N);
-        M.BacaMatriks();
+            M = new Matriks(N,N);
+
+            newline();
+            System.out.println("Matriks : ");
+            M.BacaMatriks();
+        }
 
         M.InverseGauss().TulisMatriks();
 
@@ -281,11 +377,6 @@ public class run {
         M.InterPolasiPolinom(SP);
 
         Input.close();
-    }
-
-    public static void ClearScreen() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
     }
 
     public static void main(String[] args) {
