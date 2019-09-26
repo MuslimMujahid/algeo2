@@ -2,6 +2,9 @@ package algeo;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 //ADT MATRIKS
 import java.util.Scanner;
 
@@ -14,14 +17,14 @@ public class Matriks {
     final int KolMax = 100;
 
     // {** KONSTRUKTOR** }
-	public double[][] Indeks;
+	public BigDecimal[][] Indeks;
 	public int NBrsEff; //jumlah baris yang terdefinisi
 	public int NKolEff; //jumlah kolom yang terdefinisi
 
 	public Matriks(int NB, int NK) {
 		this.NBrsEff = NB;
 		this.NKolEff = NK;
-		this.Indeks = new double[this.BrsMax+1][this.KolMax+1];
+		this.Indeks = new BigDecimal[this.BrsMax+1][this.KolMax+1];
 	}
 	/* Membentuk sebuah MATRIKS "kosong" yang siap diisi berukuran NB x NK di "ujung kiri" memori */
 	/* I.S. NB dan NK adalah valid untuk memori matriks yang dibuat */
@@ -56,7 +59,7 @@ public class Matriks {
 		for (int i = 1; i <= NB; i++) {
 			String[] Arr = ("0 " + Input.nextLine()).split(" ");
 			for (int j = 1; j <= NK; j++) {
-				this.Indeks[i][j] = Double.parseDouble(Arr[j]);
+				this.Indeks[i][j] = new BigDecimal(Arr[j]);
 			}
 		}
 
@@ -79,7 +82,7 @@ public class Matriks {
 				this.NBrsEff += 1;
                 Arr = ("0 " + line).split(" ");
 				for (int j = 1; j <= Arr.length-1; j++) {
-					this.Indeks[i][j] = Double.parseDouble(Arr[j]);
+					this.Indeks[i][j] = new BigDecimal(Arr[j]);
 				}
 				line = reader.readLine();
 				this.NKolEff = Arr.length-1;
@@ -90,10 +93,13 @@ public class Matriks {
         }
 	}
 
-	public static double roundAvoid(double value, int places) {
-		double scale = Math.pow(10, places);
-		return Math.round(value * scale) / scale;
-	}
+	public static void usingFileWriter(String fileContent, String filename) throws IOException
+    {
+		FileWriter fileWriter = new FileWriter("filename");
+		fileWriter.write(fileContent);
+		fileWriter.close();
+        
+    }
 
 	public void TulisMatriks() {
 		int NB = this.GetLastIdxBrs();
@@ -101,7 +107,7 @@ public class Matriks {
 		for (int i = 1; i <= NB; i++) {
 			System.out.print("| ");
 			for (int j = 1; j <= NK; j++) {   
-				System.out.printf("%.2f ",this.Indeks[i][j]);
+				System.out.printf("%.5f ",this.Indeks[i][j]);
 
 			}
 			System.out.printf(" |\n"); //membuat baris yang baru di akhir kolom matriks.
@@ -128,7 +134,7 @@ public class Matriks {
 		Matriks M = new Matriks(M1.NBrsEff,M1.NKolEff);
 		for (int i = 1; i <= NB; i++) {
 			for (int j = 1; j <= NK; j++) {
-				M.Indeks[i][j] = roundAvoid(M1.Indeks[i][j] + M1.Indeks[i][j], 4);
+				M.Indeks[i][j].add(M1.Indeks[i][j].add(M2.Indeks[i][j]));
 
 			}
 		}
@@ -144,25 +150,25 @@ public class Matriks {
 		Matriks M = new Matriks(NB,NK);
 		for (int i = 1; i <= NB; i++) {
 			for (int j = 1; j <= NK; j++) {
-				M.Indeks[i][j] = roundAvoid(M1.Indeks[i][j] - M1.Indeks[i][j], 4);
+				M.Indeks[i][j].add(M1.Indeks[i][j].subtract(M2.Indeks[i][j]));
 			}
 		}
 		return M;
 	}
 
-	public double[] KurangRow (double[] R1, double[] R2) {
+	public BigDecimal[] KurangRow (BigDecimal[] R1, BigDecimal[] R2) {
 
 		for ( int i = 1; i < this.GetLastIdxKol() + 1; i++ ) {
-			R1[i] = roundAvoid(R1[i] - R2[i], 4);
+			R1[i] = R1[i].subtract(R2[i]);
 		}
 
 		return R1;
 	}
 
-	public double[] TambahRow (double[] R1, double[] R2) {
+	public BigDecimal[] TambahRow (BigDecimal[] R1, BigDecimal[] R2) {
 
 		for ( int i = 1; i < this.GetLastIdxKol() + 1; i++ ) {
-			R1[i] = roundAvoid(R1[i] - R2[i], 4);
+			R1[i] = R1[i].subtract(R2[i]);
 		}
 
 		return R1;
@@ -170,12 +176,12 @@ public class Matriks {
 
 	public static Matriks KaliMatriks(Matriks M1, Matriks M2) {
 		Matriks M = new Matriks(M1.GetLastIdxBrs(), M1.GetLastIdxKol());
-		double X = 0; /*sebagai counter untuk menjumlahkan hasil perkalian tiap elemen*/
+		BigDecimal X = BigDecimal.ZERO; /*sebagai counter untuk menjumlahkan hasil perkalian tiap elemen*/
 		for (int i=M1.GetFirstIdxBrs();i<=M1.GetLastIdxBrs();i++) {
 			for (int j=M2.GetFirstIdxKol();j<=M2.GetLastIdxKol();j++) {
-				X=0;
+				X = BigDecimal.ZERO;
 				for (int k=M1.GetFirstIdxKol();k<=M1.GetLastIdxKol();k++) {
-					X=roundAvoid(X+M1.Indeks[i][k]*M2.Indeks[k][j], 4); /*perkalian baris dengan kolom*/
+					X.add(M1.Indeks[i][k].multiply(M2.Indeks[k][j])); /*perkalian baris dengan kolom*/
 				}
 				M.Indeks[i][j] = X;
 			}
@@ -187,7 +193,7 @@ public class Matriks {
 	public Matriks Transpose () {
 
 		Matriks T = this;
-		double tmp = 0;
+		BigDecimal tmp = BigDecimal.ZERO;
 	
 		for ( int i = T.GetFirstIdxBrs(); i < T.GetLastIdxBrs(); i++ ) {
 			for ( int j = i + 1; j < T.GetLastIdxKol() + 1; j++ ) {
@@ -231,10 +237,10 @@ public class Matriks {
 		// Cek perkolom
 		for ( int j = M.GetFirstIdxBrs(); j < M.GetLastIdxBrs() + 1; j++ ) {
 
-			if ( M.Indeks[j][j] == 0 ) {
-
+			if ( M.Indeks[j][j].equals(BigDecimal.ZERO) ) {
+				
 				for ( int a = j+1; a < M.GetLastIdxBrs()+1; a++ ) {
-					if ( M.Indeks[a][j] != 0 ) {
+					if ( M.Indeks[a][j].compareTo(BigDecimal.ZERO) < 0 || M.Indeks[a][j].compareTo(BigDecimal.ZERO) > 0) {
 						M.Indeks[j] = M.KurangRow(M.Indeks[j], M.Indeks[a]);
 						break;
 					}
@@ -245,14 +251,14 @@ public class Matriks {
 			// Cek perbaris
 			for ( int i = j+1; i < M.GetLastIdxBrs() + 1; i++ ) {
 
-				if ( M.Indeks[i][j] == 0 ) {
+				if ( M.Indeks[i][j].compareTo(BigDecimal.ZERO) < 0 || M.Indeks[i][j].compareTo(BigDecimal.ZERO) > 0 ) {
 					continue;
 				}
 
-				double dvdr = M.Indeks[i][j]/M.Indeks[j][j];
-				double[] RowDistract = new double[M.GetLastIdxKol()+1];
+				BigDecimal dvdr = M.Indeks[i][j].divide(M.Indeks[j][j]);
+				BigDecimal[] RowDistract = new BigDecimal[M.GetLastIdxKol()+1];
 				for ( int k = M.GetFirstIdxBrs(); k < M.GetLastIdxBrs()+1; k++ ) {
-					RowDistract[k] = M.Indeks[j][k] * dvdr;
+					RowDistract[k] = M.Indeks[j][k].multiply(dvdr);
 				}
 				M.Indeks[i] = M.KurangRow(M.Indeks[i], RowDistract);
 			}
@@ -262,31 +268,31 @@ public class Matriks {
 		return M;
 	}
 
-	public double DeterminanGauss() {
+	public BigDecimal DeterminanGauss() {
 
-		double det = 1;
+		BigDecimal det = BigDecimal.ONE;
 		
 		Matriks M = new Matriks(this.NBrsEff,this.NKolEff);
 		M.CopyMatriks(this);
 		M.CopyMatriks(M.UpTriangle());
 
 		for ( int i = M.GetFirstIdxBrs(); i < M.GetLastIdxBrs() + 1; i++ ) {
-			det *= M.Indeks[i][i];
+			det = det.multiply(M.Indeks[i][i]);
 		}
 
 		return det;
 	}
 
-	public double DeterminanKofaktor() {
+	public BigDecimal DeterminanKofaktor() {
 
 		if ( this.NBElmt() == 1) {
 			return this.Indeks[1][1];
 		} else if ( this.NBrsEff == 2 && this.NKolEff == 2 ) {
-			return this.Indeks[1][1]*this.Indeks[2][2] - this.Indeks[1][2]*this.Indeks[2][1];
+			return (this.Indeks[1][1].multiply(this.Indeks[2][2])).subtract(this.Indeks[1][2].multiply(this.Indeks[2][1]));
 		} else {
-			double det = 0;
+			BigDecimal det = BigDecimal.ZERO;
 			for ( int j = this.GetFirstIdxKol(); j < this.GetLastIdxKol() + 1; j++ ) {
-				det += Math.pow(-1,1+j) * this.Indeks[1][j] * this.MatriksMinor(1,j).DeterminanKofaktor();
+				det = det.add(BigDecimal.valueOf(Math.pow(-1,1+j)).multiply(this.Indeks[1][j]).multiply(this.MatriksMinor(1,j).DeterminanKofaktor()));
 			}
 			return det;
 		}
@@ -304,7 +310,7 @@ public class Matriks {
 		for ( int i = this.GetFirstIdxBrs(); i < this.GetLastIdxBrs() + 1; i++ ) {
 			for ( int j = this.GetFirstIdxKol(); j < this.GetLastIdxKol() + 1; j++ ) {
 				// C.Indeks[i][j] = this.MatriksMinor(1,1).DeterminanKofaktor();
-				C.Indeks[i][j] = (int)Math.pow(-1,i+j)* this.MatriksMinor(i,j).DeterminanKofaktor();
+				C.Indeks[i][j] = BigDecimal.valueOf(Math.pow(-1,i+j)).multiply(this.MatriksMinor(i,j).DeterminanKofaktor());
 			}
 		}
 
@@ -321,13 +327,13 @@ public class Matriks {
 
 	public Matriks InverseAdjoin() {
 
-		double det = this.DeterminanKofaktor();
+		BigDecimal det = this.DeterminanKofaktor();
 		Matriks Adj = this.Adjoin();
 		Matriks Ai = new Matriks(this.NBrsEff,this.NKolEff);
 
 		for ( int i = Ai.GetFirstIdxBrs(); i < Ai.GetLastIdxBrs() + 1; i++ ) {
 			for ( int j = Ai.GetFirstIdxKol(); j < Ai.GetLastIdxKol() + 1; j++ ) {
-				Ai.Indeks[i][j] = (1/det)*Adj.Indeks[i][j];
+				Ai.Indeks[i][j] = ((BigDecimal.ONE).divide(det)).multiply(Adj.Indeks[i][j]);
 			}
 		}
 
@@ -344,16 +350,16 @@ public class Matriks {
 		// Membuat matriks identitas
 		Matriks Inv = new Matriks(this.NBrsEff,this.NKolEff);
 		for ( int i = Inv.GetFirstIdxBrs(); i < Inv.GetLastIdxBrs()+1; i++ ) {
-			Inv.Indeks[i][i] = 1;
+			Inv.Indeks[i][i] = BigDecimal.ONE;
 		}
 
 		// Cek perkolom
 		for ( int j = M.GetFirstIdxBrs(); j < M.GetLastIdxBrs(); j++ ) {
 
-			if ( M.Indeks[j][j] == 0 ) {
+			if ( M.Indeks[j][j].equals(BigDecimal.ZERO) ) {
 
 				for ( int a = j+1; a < M.GetLastIdxBrs()+1; a++ ) {
-					if ( M.Indeks[a][j] != 0 ) {
+					if ( M.Indeks[a][j].compareTo(BigDecimal.ZERO) < 0 || M.Indeks[a][j].compareTo(BigDecimal.ZERO) > 0) {
 						M.Indeks[j] = M.KurangRow(M.Indeks[j], M.Indeks[a]);
 						Inv.Indeks[j] = Inv.KurangRow(Inv.Indeks[j], Inv.Indeks[a]);
 						break;
@@ -365,18 +371,18 @@ public class Matriks {
 			// Cek perbaris
 			for ( int i = j+1; i < M.GetLastIdxBrs() + 1; i++ ) {
 
-				if ( M.Indeks[i][j] == 0 ) {
+				if ( M.Indeks[i][j].equals(BigDecimal.ZERO) ) {
 					continue;
 				}
 
-				double dvdr = M.Indeks[i][j]/M.Indeks[j][j];
-				double[] RowDistract = new double[M.GetLastIdxKol()+1];
-				double[] RowDistract2 = new double[M.GetLastIdxKol()+1];
+				BigDecimal dvdr = M.Indeks[i][j].divide(M.Indeks[j][j]);
+				BigDecimal[] RowDistract = new BigDecimal[M.GetLastIdxKol()+1];
+				BigDecimal[] RowDistract2 = new BigDecimal[M.GetLastIdxKol()+1];
 				for ( int k = M.GetFirstIdxBrs(); k < M.GetLastIdxBrs()+1; k++ ) {
-					RowDistract[k] = M.Indeks[j][k] * dvdr;
+					RowDistract[k] = M.Indeks[j][k].multiply(dvdr);
 				}
 				for ( int k = M.GetFirstIdxBrs(); k < M.GetLastIdxBrs()+1; k++ ) {
-					RowDistract2[k] = Inv.Indeks[j][k] * dvdr;
+					RowDistract2[k] = Inv.Indeks[j][k].multiply(dvdr);
 				}
 				M.Indeks[i] = M.KurangRow(M.Indeks[i], RowDistract);
 				Inv.Indeks[i] = Inv.KurangRow(Inv.Indeks[i], RowDistract2);
@@ -387,10 +393,10 @@ public class Matriks {
 		// Cek perkolom
 		for ( int j = M.GetLastIdxBrs(); j > M.GetFirstIdxBrs(); j-- ) {
 
-			if ( M.Indeks[j][j] == 0 ) {
+			if ( M.Indeks[j][j].equals(BigDecimal.ZERO) ) {
 
 				for ( int a = j-1; a > M.GetFirstIdxBrs()-1; a-- ) {
-					if ( M.Indeks[a][j] != 0 ) {
+					if ( M.Indeks[a][j].compareTo(BigDecimal.ZERO) < 0 || M.Indeks[a][j].compareTo(BigDecimal.ZERO) < 0) {
 						M.Indeks[j] = M.KurangRow(M.Indeks[j], M.Indeks[a]);
 						Inv.Indeks[j] = Inv.KurangRow(Inv.Indeks[j], Inv.Indeks[a]);
 						break;
@@ -402,18 +408,18 @@ public class Matriks {
 			// Cek perbaris
 			for ( int i = j-1; i > M.GetFirstIdxBrs() - 1; i-- ) {
 
-				if ( M.Indeks[i][j] == 0 ) {
+				if ( M.Indeks[i][j].equals(BigDecimal.ZERO) ){
 					continue;
 				}
 
-				double dvdr = M.Indeks[i][j]/M.Indeks[j][j];
-				double[] RowDistract = new double[M.GetLastIdxKol()+1];
-				double[] RowDistract2 = new double[M.GetLastIdxKol()+1];
+				BigDecimal dvdr = M.Indeks[i][j].divide(M.Indeks[j][j]);
+				BigDecimal[] RowDistract = new BigDecimal[M.GetLastIdxKol()+1];
+				BigDecimal[] RowDistract2 = new BigDecimal[M.GetLastIdxKol()+1];
 				for ( int k = M.GetFirstIdxBrs(); k < M.GetLastIdxBrs()+1; k++ ) {
-					RowDistract[k] = M.Indeks[j][k] * dvdr;
+					RowDistract[k] = M.Indeks[j][k].multiply(dvdr);
 				}
 				for ( int k = M.GetFirstIdxBrs(); k < M.GetLastIdxBrs()+1; k++ ) {
-					RowDistract2[k] = Inv.Indeks[j][k] * dvdr;
+					RowDistract2[k] = Inv.Indeks[j][k].multiply(dvdr);
 				}
 				M.Indeks[i] = M.KurangRow(M.Indeks[i], RowDistract);
 				Inv.Indeks[i] = Inv.KurangRow(Inv.Indeks[i], RowDistract2);
@@ -423,7 +429,7 @@ public class Matriks {
 
 		for ( int i = Inv.GetFirstIdxBrs(); i < Inv.GetLastIdxBrs()+1; i++ ) {
 			for ( int j = Inv.GetFirstIdxKol(); j < Inv.GetLastIdxKol()+1; j++ ) {
-				Inv.Indeks[i][j] = Inv.Indeks[i][j]/M.Indeks[i][i];
+				Inv.Indeks[i][j] = Inv.Indeks[i][j].divide(M.Indeks[i][i]);
 			}
 		}
 
@@ -460,9 +466,9 @@ public class Matriks {
 
         for ( int i = SP.GetFirstIdx(); i < SP.NPL + 1; i++ ) {
             for ( int j = SP.GetFirstIdx(); j < SP.GetNmax() + 1; j++ ) {
-                this.Indeks[i][j] = SP.GetPLn(i).GetAn(j);
+                this.Indeks[i][j] = BigDecimal.valueOf(SP.GetPLn(i).GetAn(j));
 			}
-            this.Indeks[i][SP.GetNmax()+1] = SP.GetPLn(i).GetB();			
+            this.Indeks[i][SP.GetNmax()+1] = BigDecimal.valueOf(SP.GetPLn(i).GetB());			
 		}
 	}
 	// Mengembalikan Sistem Persamaan Linier SP dalam bentuk matriks
@@ -477,16 +483,16 @@ public class Matriks {
 		// Cek perkolom
 		for ( int j = M.GetFirstIdxKol(); j-b < M.GetLastIdxBrs()-1; j++ ) {
 
-			if ( M.Indeks[j-b][j] == 0 ) {
+			if ( M.Indeks[j-b][j].equals(BigDecimal.ZERO) ) {
 
 				for ( int a = j+1-b; a < M.GetLastIdxBrs()+1; a++ ) {
-					if ( M.Indeks[a][j] != 0 ) {
+					if ( M.Indeks[a][j].compareTo(BigDecimal.ZERO) < 0 || M.Indeks[a][j].compareTo(BigDecimal.ZERO) > 0 ) {
 						M.Indeks[j] = M.KurangRow(M.Indeks[j], M.Indeks[a]);
 						break;
 					}
 				}
 
-				if ( M.Indeks[j-b][j] == 0 ) {
+				if ( M.Indeks[j-b][j].equals(BigDecimal.ZERO) ) {
 					b++;
 					continue;
 				}
@@ -496,11 +502,11 @@ public class Matriks {
 			// Cek perbaris
 			for ( int i = j+1-b; i < M.GetLastIdxBrs() + 1; i++ ) {
 
-				if ( M.Indeks[i][j] != 0 ) {
-					double dvdr = M.Indeks[i][j]/M.Indeks[j-b][j];
-					double[] RowDistract = new double[M.GetLastIdxKol()+1];
+				if ( M.Indeks[i][j].compareTo(BigDecimal.ZERO) < 0 || M.Indeks[i][j].compareTo(BigDecimal.ZERO) > 0 ) {
+					BigDecimal dvdr = M.Indeks[i][j].divide(M.Indeks[j-b][j]);
+					BigDecimal[] RowDistract = new BigDecimal[M.GetLastIdxKol()+1];
 					for ( int k = M.GetFirstIdxKol(); k < M.GetLastIdxKol()+1; k++ ) {
-						RowDistract[k] = M.Indeks[j-b][k] * dvdr;
+						RowDistract[k] = M.Indeks[j-b][k].multiply(dvdr);
 					}
 					M.Indeks[i] = M.KurangRow(M.Indeks[i], RowDistract);
 				}
@@ -508,14 +514,14 @@ public class Matriks {
 			// Operasi baris elementer
 		}
 
-		double dvdr;
+		BigDecimal dvdr;
 		for ( int i = M.GetFirstIdxBrs(); i < M.GetLastIdxBrs() + 1; i++ ) {
 			for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol() + 1; j++ ) {
-				if ( M.Indeks[i][j] != 0 ) {
+				if ( M.Indeks[i][j].compareTo(BigDecimal.ZERO) < 0 || M.Indeks[i][j].compareTo(BigDecimal.ZERO) > 0 ) {
 					dvdr = M.Indeks[i][j];
 
 					for ( int k = j; k < M.GetLastIdxKol() + 1; k++ ) {
-						M.Indeks[i][k] = roundAvoid(M.Indeks[i][k]/dvdr, 4);
+						M.Indeks[i][k] = M.Indeks[i][k].divide(dvdr);
 					}
 
 					break;
@@ -533,13 +539,13 @@ public class Matriks {
 
 		for ( int i = M.GetLastIdxBrs(); i > M.GetFirstIdxBrs(); i-- ) {
 			for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol() + 1; j++ ) {
-				if ( M.Indeks[i][j] != 0 ) {
+				if ( M.Indeks[i][j].compareTo(BigDecimal.ZERO) < 0 || M.Indeks[i][j].compareTo(BigDecimal.ZERO) > 0 ) {
 					for ( int k = i-1; k > M.GetFirstIdxBrs()-1; k-- ) {
-						if ( M.Indeks[k][j] != 0 ) {
-							double dvdr = roundAvoid(M.Indeks[k][j]/M.Indeks[i][j], 4);
-							double[] RowDistract = new double[M.GetLastIdxKol()+1];
+						if ( M.Indeks[k][j].compareTo(BigDecimal.ZERO) < 0 || M.Indeks[k][j].compareTo(BigDecimal.ZERO) > 0) {
+							BigDecimal dvdr = M.Indeks[k][j].divide(M.Indeks[i][j]);
+							BigDecimal[] RowDistract = new BigDecimal[M.GetLastIdxKol()+1];
 							for ( int l = M.GetFirstIdxKol(); l < M.GetLastIdxKol()+1; l++ ) {
-								RowDistract[l] = roundAvoid(M.Indeks[i][l] * dvdr, 4);
+								RowDistract[l] = M.Indeks[i][l].multiply(dvdr);
 							}
 							M.Indeks[k] = M.KurangRow(M.Indeks[k], RowDistract);
 						}
@@ -549,14 +555,14 @@ public class Matriks {
 			}
 		}
 
-		double dvdr;
+		BigDecimal dvdr;
 		for ( int i = M.GetFirstIdxBrs(); i < M.GetLastIdxBrs() + 1; i++ ) {
 			for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol() + 1; j++ ) {
-				if ( M.Indeks[i][j] != 0 ) {
+				if ( M.Indeks[i][j].compareTo(BigDecimal.ZERO) < 0 || M.Indeks[i][j].compareTo(BigDecimal.ZERO) > 0 ) {
 					dvdr = M.Indeks[i][j];
 
 					for ( int k = j; k < M.GetLastIdxKol() + 1; k++ ) {
-						M.Indeks[i][k] = roundAvoid(M.Indeks[i][k]/dvdr, 4);
+						M.Indeks[i][k] = M.Indeks[i][k].divide(dvdr);
 					}
 
 					break;
@@ -574,7 +580,7 @@ public class Matriks {
 		M.SPLtoMatriks(SP);
 		M = M.GaussElimination();
 
-		double[] result = new double[SP.GetNmax()+1];
+		BigDecimal[] result = new BigDecimal[SP.GetNmax()+1];
 
 		if ( SP.GetNPL() > SP.GetNmax() ) {
 			for ( int i = SP.GetNmax(); i < SP.GetNPL()+1; i++ ) {
@@ -583,19 +589,21 @@ public class Matriks {
 			}
 		}
 
-		if ( M.DeterminanGauss() != 0 && M.NBrsEff == M.NKolEff-1) {
+		if ( (M.DeterminanGauss().compareTo(BigDecimal.ZERO) < 0 || M.DeterminanGauss().compareTo(BigDecimal.ZERO) > 0) && M.NBrsEff == M.NKolEff-1) {
 
 			for ( int i = M.GetLastIdxBrs(); i > M.GetFirstIdxBrs()-1; i-- ) {
 				result[i] = M.Indeks[i][SP.GetNmax()+1];
 				for ( int j = M.GetLastIdxKol()-1; j > M.GetFirstIdxKol()-1; j-- ) {
 					if ( j != i ) {
-						result[i] -= M.Indeks[i][j]*result[j];
+						result[i] = result[i].subtract(M.Indeks[i][j].multiply(result[j]));
 					}
 				}
 			}
 
+
 			for ( int i = M.GetFirstIdxBrs(); i < M.GetLastIdxBrs()+1; i++ ) {
-				System.out.printf("x%d : %.2f\n",i,result[i]);
+				System.out.printf("x%d : %.5f\n",i,result[i]);
+				SaveStr += (Integer.toString(i) + " : " + result[i].toString() + "\n");
 			}
 
 		} else {
@@ -613,11 +621,11 @@ public class Matriks {
 			j = GetFirstIdxKol()-1;
 			do {
 				j++;
-			} while ( (i == j && this.Indeks[i][j] == 1) || (i != j && this.Indeks[i][j] == 0) && j < this.GetLastIdxKol()+1);
+			} while ( (i == j && this.Indeks[i][j].equals(BigDecimal.ONE)) || (i != j && this.Indeks[i][j].equals(BigDecimal.ZERO)) && j < this.GetLastIdxKol()+1);
 			i++;
-		} while ( (i == j && this.Indeks[i][j] == 1) || (i != j && this.Indeks[i][j] == 0) && i < this.GetLastIdxBrs()+1);
+		} while ( (i == j && this.Indeks[i][j].equals(BigDecimal.ONE)) || (i != j && this.Indeks[i][j].equals(BigDecimal.ZERO)) && i < this.GetLastIdxBrs()+1);
 
-		return ( (i == j && this.Indeks[i][j] == 1) || (i != j && this.Indeks[i][j] == 0) );
+		return ( (i == j && this.Indeks[i][j].equals(BigDecimal.ONE)) || (i != j && this.Indeks[i][j].equals(BigDecimal.ZERO)) );
 	}
 
 	public boolean IsRowZero(int i) {
@@ -625,9 +633,9 @@ public class Matriks {
 
 		do {
 			j++;
-		} while ( this.Indeks[i][j] == 0 && j < this.GetLastIdxKol()+1 );
+		} while ( this.Indeks[i][j].equals(BigDecimal.ZERO) && j < this.GetLastIdxKol()+1 );
 
-		return ( this.Indeks[i][j] == 0 );
+		return ( this.Indeks[i][j].equals(BigDecimal.ZERO) );
 	}
 
 	// ***** Penyelesaian SPL dengan Eliminasi Gauss-Jordan ******
@@ -649,11 +657,11 @@ public class Matriks {
 			}
 		}
 
-		if ( (M.NBrsEff != M.NKolEff) || (M.NBrsEff == M.NKolEff && M.DeterminanGauss() != 0) ) {
+		if ( (M.NBrsEff != M.NKolEff) || (M.NBrsEff == M.NKolEff && (M.DeterminanGauss().compareTo(BigDecimal.ZERO) < 0 || M.DeterminanGauss().compareTo(BigDecimal.ZERO) > 0)) ) {
 			int a = 1;
 			int c = 0;
 			for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {
-				if ( M.Indeks[a][j] != 1 ) {
+				if ( M.Indeks[a][j].compareTo(BigDecimal.ONE) < 0 || M.Indeks[a][j].compareTo(BigDecimal.ONE) > 0 ) {
 					FreeVar[j] = ch[c];
 					c++;
 				} else {
@@ -664,25 +672,25 @@ public class Matriks {
 			for ( int i = M.GetFirstIdxBrs(); i < M.GetLastIdxBrs()+1; i++ ) {
 				if (!M.IsRowZero(i)) {
 					for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {
-						if ( M.Indeks[i][j] == 1 ) {
+						if ( M.Indeks[i][j].equals(BigDecimal.ONE) ) {
 							System.out.printf("x%d = ",j);
-							if ( M.Indeks[i][M.GetLastIdxKol()] != 0 ) {
-								System.out.printf("%.2f",M.Indeks[i][M.GetLastIdxKol()]);
+							if ( M.Indeks[i][M.GetLastIdxKol()].compareTo(BigDecimal.ZERO) < 0 || M.Indeks[i][M.GetLastIdxKol()].compareTo(BigDecimal.ZERO) > 0) {
+								System.out.printf("%.5f",M.Indeks[i][M.GetLastIdxKol()]);
 							}
 							for ( int k = j+1; k < M.GetLastIdxKol(); k++ ) {
-								if ( M.Indeks[i][k] != 0 ) {
-									if ( M.Indeks[i][k] < 0 ) {
-										if ( M.Indeks[i][M.GetLastIdxKol()] != 0 ) {
-											System.out.printf("+%.2f%c",M.Indeks[i][k],FreeVar[k]);
-										} else {
-											System.out.printf("%.2f%c",M.Indeks[i][k],FreeVar[k]);
-										}
+								if ( M.Indeks[i][k].compareTo(BigDecimal.ZERO) < 0 || M.Indeks[i][k].compareTo(BigDecimal.ZERO) > 0 ) {
+									if ( M.Indeks[i][M.GetLastIdxKol()].doubleValue() == 0 ) {
+										System.out.printf("%.5f%c",M.Indeks[i][k].abs(),FreeVar[k]);
 										c++;
 									} else {
-										System.out.printf("%.2f%c",M.Indeks[i][k],FreeVar[k]);
+										if ( M.Indeks[i][k].compareTo(BigDecimal.ZERO) < 0 ) {
+											System.out.printf("+%.5f%c",M.Indeks[i][k].abs(),FreeVar[k]);
+										} else {
+											System.out.printf("%.5f%c",M.Indeks[i][k],FreeVar[k]);
+										}
 										c++;
 									}
-								}
+								} 
 							}
 							System.out.println();
 							break;
@@ -699,11 +707,11 @@ public class Matriks {
     // ***** Penyelesaian SPL dengan inverse ******
 	public void SPLInverse(SPL SP) {
 		
-		if ( this.MatriksA().NBrsEff == this.MatriksA().NKolEff && this.MatriksA().DeterminanGauss() != 0 ) {
+		if ( this.MatriksA().NBrsEff == this.MatriksA().NKolEff && (this.MatriksA().DeterminanGauss().compareTo(BigDecimal.ZERO) < 0 || this.MatriksA().DeterminanGauss().compareTo(BigDecimal.ZERO) > 0) ) {
 			Matriks MatriksX = new Matriks(SP.GetNPL(),1);
 			MatriksX = KaliMatriks(this.MatriksA().InverseAdjoin(), this.MatriksB());
 			for ( int i = MatriksX.GetFirstIdxBrs(); i < MatriksX.GetLastIdxBrs() + 1; i++ ) {
-				System.out.printf("x%d : %.2f\n",i,MatriksX.Indeks[i][1]);
+				System.out.printf("x%d : %.5f\n",i,MatriksX.Indeks[i][1]);
 			}
 		} else {
 			System.out.println("Sistem tidak memiliki solusi");
@@ -715,14 +723,14 @@ public class Matriks {
 	// dan menampilkan hasilnya dalam format x<n> : <hasil>
 
 	// ***** Penyelesaian SPL dengan kaidah cramer ******
-	public double Cramer(int kolom, Matriks persamaan, Matriks hasil) {
+	public BigDecimal Cramer(int kolom, Matriks persamaan, Matriks hasil) {
 		Matriks copy = new Matriks(persamaan.NBrsEff,persamaan.NKolEff);
 		copy.CopyMatriks(persamaan);
 		int NB = persamaan.GetLastIdxBrs();
     	for (int i = 1; i <= NB; i++) {
 				copy.Indeks[i][kolom] = hasil.Indeks[i][1];
 		}
-		return (copy.DeterminanKofaktor()/persamaan.DeterminanKofaktor());
+		return (copy.DeterminanKofaktor().divide(persamaan.DeterminanKofaktor()));
 	}
 	// Mengembalikan hasil dari x<kolom>
 
@@ -730,9 +738,9 @@ public class Matriks {
 		Matriks M = new Matriks(SP.GetNPL(),SP.GetNmax()+1);
 		M.SPLtoMatriks(SP);
 
-		if ( M.NBrsEff == M.NKolEff && M.DeterminanGauss() != 0 ) {
+		if ( M.NBrsEff == M.NKolEff && (M.DeterminanGauss().compareTo(BigDecimal.ZERO) < 0 || M.DeterminanGauss().compareTo(BigDecimal.ZERO) > 0)) {
 			for ( int j = M.GetFirstIdxKol(); j < M.GetLastIdxKol(); j++ ) {
-				System.out.printf("x%d : %.2f\n",j,Cramer(j, M.MatriksA(), M.MatriksB()));
+				System.out.printf("x%d : %.5f\n",j,Cramer(j, M.MatriksA(), M.MatriksB()));
 			}
 		} else {
 			System.out.println("Sistem tidak memiliki solusi");
@@ -741,10 +749,4 @@ public class Matriks {
 	}
 	// Menyelesaikan Sistem Persamaaan Linier dengan menggunakan kaidah cramer
 	// dan menampilkan hasilnya dalam format x<n> : <hasil>
-
-	public void InterPolasiPolinom(SPL SP) {
-		Matriks M = new Matriks(SP.GetNPL(),SP.GetNmax()+1);
-		M.SPLtoMatriks(SP);
-		M.GaussJordanElimination().TulisMatriks();
-	}
 }

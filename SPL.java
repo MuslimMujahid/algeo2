@@ -98,7 +98,7 @@ public class SPL {
         }
     }
 
-    void BacaPersamaanInterpolasi(int n) {
+    public void BacaPersamaanInterpolasi(int n) {
 
         Scanner Input = new Scanner(System.in);
 
@@ -106,13 +106,55 @@ public class SPL {
         this.NPL = n+1;
         this.Nmax = n+1;
 
-        for ( int i = 1; i < this.GetNPL()+1; i++ ) {
+        for ( int i = 1; i < this.GetNPL(); i++ ) {
             double x = Input.nextDouble();
             double y = Input.nextDouble();
             for ( int j = 1; j < this.GetNmax()+1; j++ ) {
                 this.PLs[i].a[j] = Math.pow(x,j-1);
             }
             this.PLs[i].b = y;
+        }
+    }
+
+    public void BacaPersamaanInterpolasiFILE(String file) {
+        
+        BufferedReader reader; 
+        BufferedReader reader2; 
+
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String line = reader.readLine();
+            this.NPL += 1;
+            while (line != null) {
+                this.NPL += 1;
+                line = reader.readLine();
+			}
+			
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        this.Nmax = this.NPL;
+
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String line = reader.readLine();
+            
+            int i = 1;
+            while (line != null) {
+                i++;
+				String[] Arr = line.split(" "); 
+                double x = Double.parseDouble(Arr[0]);
+                double y = Double.parseDouble(Arr[1]);
+                for ( int j = 1; j <= this.GetNPL()+1; j++ ) {
+                    this.PLs[i].a[j] = Math.pow(x,j-1);
+                }
+                this.PLs[i].b = y;
+                line = reader.readLine();
+			}
+			
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

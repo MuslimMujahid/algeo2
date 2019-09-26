@@ -1,5 +1,8 @@
 package algeo;
 import java.util.Scanner;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class run {
 
@@ -220,7 +223,7 @@ public class run {
             M.BacaMatriks();
         }
 
-        System.out.printf("Determinan : %.2f\n",M.DeterminanKofaktor());
+        System.out.printf("Determinan : %.5f\n",M.DeterminanKofaktor());
 
         Input.close();
     }
@@ -248,7 +251,7 @@ public class run {
             M.BacaMatriks();
         }
 
-        System.out.printf("Determinan : %.2f\n",M.DeterminanGauss());
+        System.out.printf("Determinan : %.5f\n",M.DeterminanGauss());
 
         Input.close();
     }
@@ -368,14 +371,26 @@ public class run {
     public static void Run_InterPolasiPolinom() {
         Scanner Input = new Scanner(System.in);
 
-        int N = Input.nextInt();
-
-        Matriks M = new Matriks(N+1,N+2);
         SPL SP = new SPL();
+        Matriks M;
 
-        SP.BacaPersamaanInterpolasi(N);
-        M.InterPolasiPolinom(SP);
+        System.out.printf("Ingin membaca dari file ? (y/n) : "); String c = Input.nextLine();
 
+        if ( "y".equals(c) ) {
+            M = new Matriks(0,0);
+            System.out.print("Nama file : "); String filename = Input.nextLine();
+            SP.BacaPersamaanInterpolasiFILE(filename);
+        } else {
+            newline();
+            System.out.print("Jumlah titik : ");
+            int N = Input.nextInt();
+
+            SP.BacaPersamaanInterpolasi(N);
+            M = new Matriks(N+1,N+2);
+            
+        }
+        newline();
+        M.SPLGaussJordan(SP);
         Input.close();
     }
 
