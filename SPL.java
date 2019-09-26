@@ -4,6 +4,7 @@ import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 public class SPL {
 
@@ -110,9 +111,9 @@ public class SPL {
             double x = Input.nextDouble();
             double y = Input.nextDouble();
             for ( int j = 1; j < this.GetNmax()+1; j++ ) {
-                this.PLs[i].a[j] = Math.pow(x,j-1);
+                this.PLs[i].a[j] = BigDecimal.valueOf(Math.pow(x,j-1));
             }
-            this.PLs[i].b = y;
+            this.PLs[i].b = BigDecimal.valueOf(y);
         }
     }
 
@@ -147,9 +148,9 @@ public class SPL {
                 double x = Double.parseDouble(Arr[0]);
                 double y = Double.parseDouble(Arr[1]);
                 for ( int j = 1; j <= this.GetNPL()+1; j++ ) {
-                    this.PLs[i].a[j] = Math.pow(x,j-1);
+                    this.PLs[i].a[j] = BigDecimal.valueOf(Math.pow(x,j-1));
                 }
-                this.PLs[i].b = y;
+                this.PLs[i].b = BigDecimal.valueOf(y);
                 line = reader.readLine();
 			}
 			

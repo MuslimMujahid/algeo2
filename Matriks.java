@@ -466,9 +466,9 @@ public class Matriks {
 
         for ( int i = SP.GetFirstIdx(); i < SP.NPL + 1; i++ ) {
             for ( int j = SP.GetFirstIdx(); j < SP.GetNmax() + 1; j++ ) {
-                this.Indeks[i][j] = BigDecimal.valueOf(SP.GetPLn(i).GetAn(j));
+                this.Indeks[i][j] = SP.GetPLn(i).GetAn(j);
 			}
-            this.Indeks[i][SP.GetNmax()+1] = BigDecimal.valueOf(SP.GetPLn(i).GetB());			
+            this.Indeks[i][SP.GetNmax()+1] = SP.GetPLn(i).GetB();			
 		}
 	}
 	// Mengembalikan Sistem Persamaan Linier SP dalam bentuk matriks
@@ -603,7 +603,6 @@ public class Matriks {
 
 			for ( int i = M.GetFirstIdxBrs(); i < M.GetLastIdxBrs()+1; i++ ) {
 				System.out.printf("x%d : %.5f\n",i,result[i]);
-				SaveStr += (Integer.toString(i) + " : " + result[i].toString() + "\n");
 			}
 
 		} else {
